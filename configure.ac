@@ -3,7 +3,7 @@
 
 AC_PREREQ([2.69])
 AC_INIT([h5mc], [0.0], [alt.mcarter@gmail.com])
-AC_CONFIG_SRCDIR([src/bin/h5print.c])
+AC_CONFIG_SRCDIR([src/h5print.c])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
 PKG_PROG_PKG_CONFIG
@@ -61,5 +61,5 @@ AM_COND_IF(DEBUG,
 
 
 AC_CONFIG_FILES([Makefile
-                 src/bin/Makefile])
+                 src/Makefile])
 AC_OUTPUT
