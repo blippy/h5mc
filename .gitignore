@@ -65,3 +65,5 @@ stamp-h1
 *.lo
 *.gcno
 *.gcda
+
+src/h5mc
