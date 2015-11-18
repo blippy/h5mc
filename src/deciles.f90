@@ -39,6 +39,7 @@ program deciles
   
   !print *, "Sorted inputs"
   !do i = 1:n
-     
+!  open(10, form='unformatted')
+ ! write(unit =10) decs
 
 end program deciles

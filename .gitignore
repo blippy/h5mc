@@ -71,6 +71,7 @@ config.sub
 
 
 src/deciles
+src/h5cold
 src/h5mc
 
                         
