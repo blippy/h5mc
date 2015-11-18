@@ -66,4 +66,11 @@ stamp-h1
 *.gcno
 *.gcda
 
+config.guess
+config.sub
+
+
+src/deciles
 src/h5mc
+
+                        

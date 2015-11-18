@@ -15,7 +15,7 @@
 #include <stdlib.h>
 
 #define FILE            "/home/mcarter/cubie/home/mcarter/data/sharelock.h5"
-#define DATASET         "D20151113/PER"
+#define DATASET         "D20151113/PFCF"
 #define DIM0            32
 #define DIM1            64
 #define CHUNK0          4
