@@ -7,9 +7,14 @@ AC_CONFIG_SRCDIR([src/h5print.c])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
 PKG_PROG_PKG_CONFIG
+AC_MSG_NOTICE([Let's rock and roll])
 
 # Externally set CFLAGS
 EXTERNAL_CFLAGS="$CFLAGS"
+
+
+#AC_MSG_NOTICE([Fortran messy HDF5 checking])
+#AX_LIB_HDF5()
 
 # Checks for programs.
 AC_PROG_CC_C99
@@ -19,7 +24,6 @@ AC_PROG_FC([gfortran], [Fortran 90])
 
 # Reset the externally set CFLAGS after calling AC_PROG*
 CFLAGS="$EXTERNAL_CFLAGS"
-
 
 
 # Use the C language and compiler
@@ -70,9 +74,19 @@ AC_LANG([Fortran])
 AC_FC_SRCEXT([f90])
 # FIXME take a look at the AC_FC_MODULE_FLAG for possible inclusion
 #AM_FCFLAGS = -I/usr/include/fgsl
+#PKG_CHECK_MODULES([HDF5], [hdf5])
 AC_FC_LIBRARY_LDFLAGS
 AC_FC_MODULE_FLAG
-
+#AC_SEARCH_LIBS([h5open_f], [hdf5_fortran],
+#   [echo "Found HDF5 Fortran library"],
+#   [echo "Did not find HDF5 Fortran library"])
+AX_LIB_HDF5() # http://www.gnu.org/software/autoconf-archive/ax_lib_hdf5.html
+AC_MSG_NOTICE([Hello world])
+#if test "$with_hdf5" = "yes"; then
+#   AC_MSG_RESULT([HDF5 found])
+#else
+#   AC_MSG_ERROR([HDF5 unfound])
+#fi   
 
 # Wrapping it up
 AC_CONFIG_FILES([Makefile
