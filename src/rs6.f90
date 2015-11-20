@@ -2,14 +2,16 @@ program rs6
   use fgsl
   use iso_c_binding
   implicit none
-  
-  double precision :: decs(0:10), rs6mb(1:1000), sorted(1:1000), inp
+
+  integer, parameter:: mrows = 1000
+  double precision, dimension(mrows) :: rs6mb, sorted
+  double precision::  decs(0:10), inp
   !integer::i
-  integer (c_size_t) :: i, n, accepted
-  character (len=10) :: epic(1:1000)
+  integer (c_size_t) :: i, n, accepted, idx(mrows)
+  character (len=10) :: epic(mrows)
   character(len=30) :: date
 
-  print *, "rs6mb by deciles"
+
   
   open(unit=11, file='_count', action = 'read')
   read(unit=11, fmt='(I5)'), n
@@ -40,13 +42,7 @@ program rs6
      decs(i) = fgsl_stats_quantile_from_sorted_data(sorted, 1_fgsl_size_t, n, dble(i)/dble(10.0))
   enddo
 
-  !print results
-  do i = 0,10
-     print *, dble(i)/dble(10.), decs(i)
-  enddo
-  print *, "Number of accepted:", accepted
-  print *, "Number of rejects: ", n - accepted
-  print *, "Toatal inputs:     ", n
+
   
 
   ! read epics
@@ -54,6 +50,26 @@ program rs6
   read (unit=11, fmt='(A4)') , epic(1:n)
   close(11)
 
+  ! print percentiles
+  print *, "rs6mb ordered in percentiles"
+  write (*,fmt='(A1,x,A7,x,A5,x,A7)'), "H", "p'ile", "epic", "rs6mb"
+  call fgsl_sort_index(idx, rs6mb, 1_fgsl_size_t, n)
+  do i=1,n
+     write(*,fmt='(A1, f7.2, 1x, A5, f7.2)') , '1', dble(100) * dble(i-1)/dble(n), epic(idx(i)+1), &
+          & rs6mb(idx(i)+1)
+  enddo
+
+  
+  !print deciles
+  print *, "rs6mb by deciles"
+  do i = 0,10
+     print *, dble(i)/dble(10.), decs(i)
+  enddo
+  print *, "Number of accepted:", accepted
+  print *, "Number of rejects: ", n - accepted
+  print *, "Toatal inputs:     ", n
+
+  
   ! print the good ones
   print *, "Epics in the top decile:"
   do i=1, n
