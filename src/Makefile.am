@@ -4,10 +4,20 @@ AM_FFLAGS1 = $(AM_FFLAGS) $(MARKS_FGSL_CFLAGS) $(FCFLAGS)
 
 # BUILT_SOURCES = a way of telling automake that some files need to be generated
 
+CLEANFILES = *.mod
 
-bin_PROGRAMS = h5cold h5mc deciles rs6
+bin_PROGRAMS = h5ade h5cold h5mc deciles rs6
 
 #FMOD_HDF5 = -I$(HOME)/.local/include
+
+quant.mod : quant.f90
+	gfortran -c quant.f90
+
+h5ade_SOURCES = h5ade.f90
+h5ade.o : quant.mod h5ade.f90
+	gfortran -c h5ade.f90 quant.f90
+h5ade$(EXEEXT) : h5ade.o quant.o
+	gfortran  -o h5ade quant.o h5ade.o
 
 # do I need deciles anymore?
 deciles_SOURCES = deciles.f90
@@ -23,8 +33,8 @@ rs6$(EXEEXT): rs6.o
 #rs6_LDADD = $(MARKS_FGSL_LIBS)
 #rs6_SOURCES = rs6.f90
 
-h5cold_LDADD = -lhdf5
+h5cold_LDADD = $(HDF5_LIBS)
 h5cold_SOURCES = h5cold.c
 
-h5mc_LDADD = -lhdf5
+h5mc_LDADD = $(HDF5_LIBS)
 h5mc_SOURCES = h5print.c

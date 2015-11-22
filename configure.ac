@@ -17,9 +17,10 @@ EXTERNAL_CFLAGS="$CFLAGS"
 #AX_LIB_HDF5()
 
 # Checks for programs.
+AC_PROG_LIBTOOL
 AC_PROG_CC_C99
 AC_PROG_CPP
-AC_PROG_RANLIB # Is this necessary?
+#AC_PROG_RANLIB # Is this necessary?
 AC_PROG_FC([gfortran], [Fortran 90])
 
 # Reset the externally set CFLAGS after calling AC_PROG*

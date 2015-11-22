@@ -69,10 +69,15 @@ stamp-h1
 config.guess
 config.sub
 
+ltmain.sh
 
 src/deciles
+src/h5ade
 src/h5cold
 src/h5mc
 src/rs6
+src/quant.mod
+
+
 
                         
