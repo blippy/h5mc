@@ -1,4 +1,5 @@
 module quant
+  implicit none
 
 contains
   
@@ -11,7 +12,7 @@ subroutine calc_rsi(prices, npoints, n, rsi)
   double precision, intent(out), dimension(npoints) ::   rsi
 
   double precision, dimension(npoints):: deltas
-  double precision :: up, down
+  double precision :: up, down, rs
   integer::  i
 
 
