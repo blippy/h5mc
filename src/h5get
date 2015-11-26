@@ -1,0 +1,17 @@
+#!/usr/bin/env bash 
+exec > >(tee -a h5mc.log)
+
+echo "h5get begin `date`"
+
+# turn on better logging
+set -x
+SYM=`basename $PWD`
+echo "Symbol to fetch, based on directory name: $SYM"
+
+quant --decade $SYM -o raw.dat
+
+
+set +x
+echo "h5get end"
+echo
+exit 0

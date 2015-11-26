@@ -4,6 +4,9 @@ AM_FFLAGS1 = $(AM_FFLAGS) $(MARKS_FGSL_CFLAGS) $(FCFLAGS)
 
 # BUILT_SOURCES = a way of telling automake that some files need to be generated
 
+# Install my_script in $(bindir) and distribute it.
+dist_bin_SCRIPTS = h5get
+
 CLEANFILES = *.mod
 
 bin_PROGRAMS = h5ade h5cold h5mc deciles rs6
