@@ -9,7 +9,7 @@ dist_bin_SCRIPTS = h5get
 
 CLEANFILES = *.mod
 
-bin_PROGRAMS = h5ade h5cold h5mc deciles rs6
+bin_PROGRAMS = h5ade h5cold h5gap h5mc deciles rs6
 
 #FMOD_HDF5 = -I$(HOME)/.local/include
 
@@ -21,6 +21,9 @@ h5ade.o : quant.mod h5ade.f90
 	gfortran -c h5ade.f90 quant.f90
 h5ade$(EXEEXT) : h5ade.o quant.o
 	gfortran  -o h5ade quant.o h5ade.o
+
+h5gap$(EXEEXT) : h5gap.f90
+	gfortran $< -o $@
 
 # do I need deciles anymore?
 deciles_SOURCES = deciles.f90
