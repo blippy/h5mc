@@ -14,6 +14,7 @@ program deciles
   rejects = 0
   n = 0
   do
+     ! it's better to use the iostat trick
      read(unit=*, fmt=*, err=999, end=999) inp
      if(isnan(inp)) then
         rejects = rejects +1

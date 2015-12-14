@@ -1,6 +1,6 @@
 module quant
   implicit none
-
+  public :: sstddev
 contains
   
 subroutine calc_rsi(prices, npoints, n, rsi)
@@ -55,4 +55,36 @@ subroutine calc_sma(prices, npoints, n, sma)
   end do
 end subroutine
 
+function sstddev(arr,n, mask)
+  ! calculate the sample std deviation
+  ! TODO test
+  implicit none
+  double precision :: sstddev
+  integer :: i, n
+  double precision, dimension(n) :: arr
+  logical, optional, dimension(n) :: mask
+  logical :: accept
+
+  double precision :: sx, sxx, npoints
+
+  npoints = 0.d0
+  sx = 0.d0
+  sxx = 0.d0
+  do i = 1,n
+     if (present(mask)) then
+        accept = mask(i)
+     else
+        accept = .true.
+     endif
+
+     if(accept) then
+        npoints = npoints + 1.d0
+        sx = sx + arr(i)
+        sxx = sxx + arr(i) * arr(i)
+     endif
+  enddo
+
+  sstddev = sqrt(( npoints * sxx - sx * sx)/n/(n-1.d0))
+  return
+end function sstddev
 end module quant
