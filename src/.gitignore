@@ -1,2 +1,4 @@
+*.cmi
+*.cmo
 *.mod
 h5cut
