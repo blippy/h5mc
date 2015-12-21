@@ -9,7 +9,7 @@ dist_bin_SCRIPTS = h5get
 
 CLEANFILES = *.mod
 
-bin_PROGRAMS = h5ade h5cold h5cut h5gap h5mc deciles rs6
+bin_PROGRAMS = h5ade h5cold h5cut h5gap h5mc h5plot deciles rs6
 
 #FMOD_HDF5 = -I$(HOME)/.local/include
 
@@ -30,6 +30,9 @@ h5cut$(EXEEXT) : h5cut.f90
 
 h5gap$(EXEEXT) : h5gap.f90
 	gfortran $^ -o $@
+
+h5plot$(EXEEXT) : h5plot.f90
+	gfortran `pkg-config --cflags --libs plplot-f95` $^ -o $@
 
 # do I need deciles anymore?
 deciles_SOURCES = deciles.f90

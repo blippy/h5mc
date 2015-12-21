@@ -73,10 +73,8 @@ ltmain.sh
 src/deciles
 src/h5ade
 src/h5cold
+src/h5gap
 src/h5mc
+src/h5plot
 src/rs6
 src/quant.mod
-src/h5gap
-
-
-                        

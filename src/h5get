@@ -8,8 +8,9 @@ set -x
 SYM=`basename $PWD`
 echo "Symbol to fetch, based on directory name: $SYM"
 
-quant --decade $SYM -o raw.dat
+#quant --decade $SYM -o raw.dat
 
+mython yahoo "$SYM" > raw.dat
 
 set +x
 echo "h5get end"
