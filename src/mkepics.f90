@@ -12,7 +12,7 @@ program mkepics
   integer:: dsi(NVALS), i, status
   double precision:: darr(NVALS)
   !character :: ticker(10)
-
+  !integer:: yr, mon, day
   !type ncepics ! stuff for ncepics file
   !   integer :: ncid, varid, x_dimid, dimids(1), idx
   !   integer :: dsi(NVALS)
@@ -26,7 +26,7 @@ program mkepics
   type(ydec), allocatable :: ydecs(:)
   type(ydec) :: y
 
-  character(len=32) :: arg, ticker
+  character(len=32) :: arg, ticker, ystr, mstr, dstr
 
   dt = datetime(year = 2004,month = 12,day=31)
   base = date2num(dt)
@@ -35,16 +35,17 @@ program mkepics
   if(iargc().ge.1) then
      call getarg(1, arg)
      select case (arg)
+     case('retr') ! retrieve ticker for a day
+        call retr() !targ(), ystr, mstr, dstr)
      case ('impdec')
-        call getarg(2, ticker)
-        !ticker = trim(ticker)
+        !call getarg(2, ticker)
         print *, 'import decade ', ticker , '.'
-        call impdec(trim(ticker))
-        !print *, 'TODO'
+        !call impdec(trim(ticker))
+        call impdec(targ())
      case ('show')
-        print *, "arg is: ", arg
-        call getarg(2, ticker)
-        call show(trim(ticker))
+        !call getarg(2, ticker)
+        !call show(trim(ticker))
+        call show(targ())
      case default
         print *, "unrecognised argument"
      end select
@@ -81,16 +82,12 @@ contains
     
     !type(ncepics) :: nc
     !call check( nf90_create(FILE_NAME, nf90_netcdf4, ncid) )
-    print *, "calling show on ticker: ", ticker, "."
+    print *, "called show on ticker: ", ticker, "."
     call check(nf90_open(FILE_NAME, NF90_NOWRITE, ncid))
 
-    call check(nf90_inq_ncid(ncid, ticker, grp_ncid))
-    call check(nf90_inq_varid(grp_ncid, "price", varid))
-    !call check(nf90_inq_varid(nc%ncid, ticker, nc%varid))
-    call check(nf90_get_var(grp_ncid, varid, darr))
+    call fill_ticker_prices(ticker) ! sets darr   
+    call get_dsi() ! sets dsi
 
-    call check(nf90_inq_varid(ncid, "dsi", varid))
-    call check(nf90_get_var(ncid, varid, dsi))
     
     call check(nf90_close(ncid))
     
@@ -144,9 +141,9 @@ contains
     darr = -1.0d0
     do i = 1, size(ydecs)
        y = ydecs(i)
-       dt = datetime(year = y%y, month = y%m, day = y%d)
-       idx = date2num(dt) - base
+
        !write( *, fmt = "(I6,I8,X, I4,2I0.2)") , i, idx, y%y, y%m, y%d
+       idx = ymd2idx( y%y, y%m, y%d)
        darr(idx) = y%acls
     enddo
     call check( nf90_put_var(grp_ncid, varid, darr) )
@@ -168,16 +165,13 @@ contains
 
   !> Make nvals and dsi, but only if non-existent
   subroutine mkdsi()
-
-    ! create dates
-
+    integer :: y, m, d
     do i = 1, NVALS
-     
-       !ndays = 
-       dt1 = num2date(base + dble(i))
-       !print *, dt1%isoformat()
-       tm1 = dt1%tm()
-       dsi(i) = (tm1%tm_year + 1900) * 10000 + (tm1%tm_mon +1) * 100 + tm1%tm_mday
+       !dt1 = num2date(base + dble(i))
+       !tm1 = dt1%tm()
+       !dsi(i) = (tm1%tm_year + 1900) * 10000 + (tm1%tm_mon +1) * 100 + tm1%tm_mday
+       call idx2ymd(idx, y, m, d)
+       dsi(i) = y * 10000 + m * 100 + d
        !print *, i, dsi(i)
        !print *, dsi
     enddo
@@ -213,5 +207,87 @@ contains
     print *, 'NF90_NOERR ', NF90_NOERR
     print *, 'NF90_NOERR ', NF90_NOERR
   end subroutine prinerrs
+
+  !> ticker argument (2nd argument)
+  function targ()
+    character(:), allocatable  :: targ
+    character(len=32) :: arg2
+    integer :: slen
+    call getarg(2, arg2)
+    slen = len_trim(arg2)
+    !allocate(targ(1:slen))
+    targ = trim(arg2)
+  end function targ
+
+  !> convert argument number argn to an integer
+  function arg2int(argn)
+    integer :: arg2int
+    integer :: argn
+
+    character(len=23) :: str
+    call getarg(argn, str)
+    read(str, '(i10)') arg2int
+  end function arg2int
+  
+  subroutine retr() !ticker, y, m, d)
+    character(len=:), allocatable :: ticker
+    integer :: y, m, d
+
+    y = arg2int(3)
+    m = arg2int(4)
+    d = arg2int(5)
+    ticker = targ()
+    print *, 'Ticker is:', ticker, '.'
+    call check(nf90_open(FILE_NAME, NF90_NOWRITE, ncid))
+    !call check(nf90_open(FILE_NAME, NF90_NOWRITE, ncid))
+    call get_dsi()
+    call fill_ticker_prices(ticker) 
+    call check(nf90_close(ncid))
+
+    ! work backwards, bearing in mind that the current entry may be -1
+    do idx = ymd2idx(y,m,d), 1, -1
+       if(darr(idx).ne.-1) exit          
+    enddo
+
+    call idx2ymd(idx, y, m, d) 
+    print *, "ticker", ticker, darr(idx), y, m, d
     
+    
+  end subroutine retr
+
+  !> assumes ncid open
+  subroutine get_dsi() ! sets dsi    
+    call check(nf90_inq_varid(ncid, "dsi", varid))
+    call check(nf90_get_var(ncid, varid, dsi))
+  end subroutine get_dsi
+  
+  !> Fill darr with prices for a ticker. Assumes ncid is open
+  subroutine fill_ticker_prices(ticker)
+    character(len=*), intent(in) :: ticker
+    call check(nf90_inq_ncid(ncid, ticker, grp_ncid))
+    call check(nf90_inq_varid(grp_ncid, "price", varid))
+    !call check(nf90_inq_varid(nc%ncid, ticker, nc%varid))
+    call check(nf90_get_var(grp_ncid, varid, darr))
+  end subroutine fill_ticker_prices
+
+  !> Convert a year, month and date into a dsi index
+  function ymd2idx(y, m, d) result(idx)
+    integer :: y , m , d, idx
+    type(datetime) :: dt
+    dt = datetime(year = y, month = m, day = d)
+    idx = date2num(dt) - base
+  end function ymd2idx
+
+  !> convert a dsi index to a year, month and date
+  subroutine idx2ymd(idx, y, m, d)
+    integer, intent(in) :: idx
+    integer, intent(out) :: y, m, d
+    type(datetime) :: dt
+    type(tm_struct) :: tm
+    dt = num2date(idx + base)
+    tm = dt%tm()
+    y = tm%tm_year + 1900
+    m = tm%tm_mon +1
+    d = tm%tm_mday
+  end subroutine idx2ymd
 end program mkepics
