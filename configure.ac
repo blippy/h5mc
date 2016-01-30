@@ -5,7 +5,7 @@ AC_PREREQ([2.69])
 AC_INIT([h5mc], [0.1], [alt.mcarter@gmail.com])
 AC_CONFIG_SRCDIR([src/h5print.c])
 AC_CONFIG_HEADERS([config.h])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([foreign])
 PKG_PROG_PKG_CONFIG
 AC_MSG_NOTICE([Let's rock and roll])
 
@@ -17,9 +17,9 @@ EXTERNAL_CFLAGS="$CFLAGS"
 #AX_LIB_HDF5()
 
 # Checks for programs.
-AC_PROG_LIBTOOL
-AC_PROG_CC_C99
-AC_PROG_CPP
+#AC_PROG_LIBTOOL
+#AC_PROG_CC_C99
+#AC_PROG_CPP
 #AC_PROG_RANLIB # Is this necessary?
 AC_PROG_FC([gfortran], [Fortran 90])
 
@@ -28,18 +28,20 @@ CFLAGS="$EXTERNAL_CFLAGS"
 
 
 # Use the C language and compiler
-AC_LANG([C])
+#AC_LANG([C])
 #AC_LANG([Fortran])
 #AC_FC_SRCEXT([f90])
 
 
 # Checks for libraries.
+PKG_CHECK_MODULES([DT], [datetime-fortran])
 PKG_CHECK_MODULES([GSL], [gsl])
 PKG_CHECK_MODULES([MARKS_FGSL], [fgsl]) # sets $MARKS_FGSL_CFLAGS $MARKS_FGSL_LIBS
-PKG_CHECK_MODULES([HDF5], [hdf5])
+#PKG_CHECK_MODULES([HDF5], [hdf5])
 
 AC_MSG_NOTICE([Marks FGSL $MARKS_FGSL_CFLAGS])
 
+AC_PROG_FC([gfortran], [Fortran 90])
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -92,6 +94,5 @@ AC_MSG_NOTICE([Hello world])
 #fi   
 
 # Wrapping it up
-AC_CONFIG_FILES([Makefile
-                 src/Makefile])
+AC_CONFIG_FILES([Makefile scripts/Makefile src/Makefile])
 AC_OUTPUT

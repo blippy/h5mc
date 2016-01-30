@@ -2,22 +2,29 @@ AM_CFLAGS = -I$(top_srcdir)/src
 AM_FFLAGS1 = $(AM_FFLAGS) $(MARKS_FGSL_CFLAGS) $(FCFLAGS)
 #-DPKGVER=\"$(PACKAGE_VERSION)\"
 
+NC_FFLAGS = $(shell nc-config --fflags)
+NC_FLIBS = $(shell nc-config --flibs)
+
 # BUILT_SOURCES = a way of telling automake that some files need to be generated
 
 # Install my_script in $(bindir) and distribute it.
-dist_bin_SCRIPTS = h5get
+#dist_bin_SCRIPTS = h5get
 
 CLEANFILES = *.mod
 
-bin_PROGRAMS = h5ade h5cold h5cut h5gap h5mc h5plot deciles rs6
+STD = -fcheck=all -ggdb
 
-#FMOD_HDF5 = -I$(HOME)/.local/include
+bin_PROGRAMS = h5ade h5cut h5gap h5plot deciles rs6 mkepics
+# old programs h5cold h5mc
 
-common.mod : common.f90
-	gfortran -c common.f90
+%.mod : %.f90
+	$(FC) -c $(STD) $< 
 
-quant.mod : quant.f90
-	gfortran -c quant.f90
+#common.mod : common.f90
+#	gfortran -c common.f90
+
+#quant.mod : quant.f90
+#	gfortran -c quant.f90
 
 h5ade_SOURCES = h5ade.f90
 h5ade.o : quant.mod h5ade.f90
@@ -25,7 +32,7 @@ h5ade.o : quant.mod h5ade.f90
 h5ade$(EXEEXT) : h5ade.o quant.o
 	gfortran  -o h5ade quant.o h5ade.o
 
-h5cut$(EXEEXT) : h5cut.f90 
+h5cut$(EXEEXT) : h5cut.f90 common.o
 	gfortran $(AM_FFLAGS1) $^ -o $@  $(MARKS_FGSL_LIBS)
 
 h5gap$(EXEEXT) : h5gap.f90
@@ -48,8 +55,16 @@ rs6$(EXEEXT): rs6.o
 #rs6_LDADD = $(MARKS_FGSL_LIBS)
 #rs6_SOURCES = rs6.f90
 
-h5cold_LDADD = $(HDF5_LIBS)
-h5cold_SOURCES = h5cold.c
+#h5cold_LDADD = $(HDF5_LIBS)
+#h5cold_SOURCES = h5cold.c
 
-h5mc_LDADD = $(HDF5_LIBS)
-h5mc_SOURCES = h5print.c
+#h5mc_LDADD = $(HDF5_LIBS)
+#h5mc_SOURCES = h5print.c
+
+mkepics_SOURCES = mkepics.f90 yahoo.f90
+
+mkepics.o : mkepics.f90 yahoo.mod
+	gfortran -c $(STD)  $(DT_CFLAGS) $(NC_FFLAGS) $< -o $@
+
+mkepics$(EXEXT) : mkepics.o yahoo.o
+	gfortran -o $@  $^  $(DT_LIBS) $(NC_FLIBS)
