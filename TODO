@@ -1,0 +1,8 @@
+
+PROBLEM building on cubie, therefore disabled making of h5plot:
+No package 'plplot-f95' found
+h5plot.f90:2.6:
+
+  use plplot
+      1
+Fatal Error: Can't open module file 'plplot.mod' for reading at (1): No such file or directory

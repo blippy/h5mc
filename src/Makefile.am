@@ -14,7 +14,8 @@ CLEANFILES = *.mod
 
 STD = -fcheck=all -ggdb
 
-bin_PROGRAMS = h5ade h5cut h5gap h5plot deciles rs6 mkepics
+bin_PROGRAMS = h5ade h5cut h5gap deciles rs6 mkepics
+# disabled h5plot from building - it requires a package
 # old programs h5cold h5mc
 
 %.mod : %.f90
