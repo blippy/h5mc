@@ -99,10 +99,8 @@ contains
 
   ! import decade worth of data
   subroutine impdec(ticker)
-    character(len=*), intent(in) :: ticker ! TODO ANNOTATE THIS
-    print *, 'TODO. import ticker: ', ticker, '.'
+    character(len=*), intent(in) :: ticker
 
-    !print 
     call check(nf90_open(FILE_NAME, nf90_write, ncid))
     call mkclose(ticker)
     call check(nf90_close(ncid))
@@ -212,10 +210,7 @@ contains
   function targ()
     character(:), allocatable  :: targ
     character(len=32) :: arg2
-    integer :: slen
     call getarg(2, arg2)
-    slen = len_trim(arg2)
-    !allocate(targ(1:slen))
     targ = trim(arg2)
   end function targ
 
