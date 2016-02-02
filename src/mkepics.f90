@@ -11,15 +11,6 @@ program mkepics
   integer :: ncid, grp_ncid, varid, x_dimid, dimids(1), idx
   integer:: dsi(NVALS), i, status
   double precision:: darr(NVALS)
-  !character :: ticker(10)
-  !integer:: yr, mon, day
-  !type ncepics ! stuff for ncepics file
-  !   integer :: ncid, varid, x_dimid, dimids(1), idx
-  !   integer :: dsi(NVALS)
-  !   double precision :: darr(NVALS)
-  !   integer :: status
-  !end type ncepics
-
   type(datetime)  :: dt, dt1
   type(tm_struct) :: tm1
   double precision:: base
@@ -66,7 +57,7 @@ program mkepics
   call mkdsi()
   
 
-  call mkclose("JRS.L")
+  !call mkclose("JRS.L")
   !call mkgrp
   print *, 'closing'
   call check( nf90_close(ncid) )
@@ -168,10 +159,9 @@ contains
        !dt1 = num2date(base + dble(i))
        !tm1 = dt1%tm()
        !dsi(i) = (tm1%tm_year + 1900) * 10000 + (tm1%tm_mon +1) * 100 + tm1%tm_mday
-       call idx2ymd(idx, y, m, d)
+       call idx2ymd(i, y, m, d)
        dsi(i) = y * 10000 + m * 100 + d
        !print *, i, dsi(i)
-       !print *, dsi
     enddo
 
     
