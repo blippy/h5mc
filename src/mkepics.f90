@@ -1,3 +1,4 @@
+#define PRERR(e) print *, 'e', e
 program mkepics
   use netcdf
 
@@ -108,13 +109,8 @@ contains
     dimids = [x_dimid]
     
     status = nf90_inq_ncid(ncid, ticker, grp_ncid)
-    print *, NF90_EBADID
-    print *, NF90_ENOTNC4
-    print *, NF90_ESTRICTNC3
-    print *, NF90_EHDFERR
-    !if(status == nf90
-    !call check(status)
-    if(status == -125) then ! doesn't exist, so create ! TODO replace by symbolic error, rather than '-125'
+
+    if(status == NF90_ENOGRP) then
        call check(nf90_def_grp(ncid, ticker, grp_ncid))
        call check(nf90_def_var(grp_ncid, "price", NF90_DOUBLE, dimids, varid))
        call check(nf90_enddef(grp_ncid))
@@ -192,8 +188,13 @@ contains
   !> print all the error codes
   subroutine prinerrs
     print *, 'error codes'
-    print *, 'NF90_NOERR ', NF90_NOERR
-    print *, 'NF90_NOERR ', NF90_NOERR
+    PRERR(NF90_ENOGRP)
+    PRERR(NF90_NOERR)
+    PRERR(NF90_EBADID)
+    PRERR(NF90_ENOTNC4)
+    PRERR(NF90_ESTRICTNC3)
+    PRERR(NF90_EHDFERR)
+    
   end subroutine prinerrs
 
   !> ticker argument (2nd argument)

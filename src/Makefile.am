@@ -65,7 +65,7 @@ rs6$(EXEEXT): rs6.o
 mkepics_SOURCES = mkepics.f90 yahoo.f90
 
 mkepics.o : mkepics.f90 yahoo.mod
-	gfortran -c $(STD)  $(DT_CFLAGS) $(NC_FFLAGS) $< -o $@
+	gfortran -c $(STD)  $(DT_CFLAGS) $(NC_FFLAGS) -cpp $< -o $@
 
 mkepics$(EXEXT) : mkepics.o yahoo.o
 	gfortran -o $@  $^  $(DT_LIBS) $(NC_FLIBS)
