@@ -142,8 +142,7 @@ contains
     if(status /= nf90_noerr) then
        print *, 'error code is value is ', status
       print *, trim(nf90_strerror(status))
-      !stop 2
-      call abort ! TODO in gfortran this produces a backtrace. VERY USEFUL TO ANNOTATE!
+      call abort
     end if
   end subroutine check
 
@@ -152,9 +151,6 @@ contains
   subroutine mkdsi()
     integer :: y, m, d
     do i = 1, NVALS
-       !dt1 = num2date(base + dble(i))
-       !tm1 = dt1%tm()
-       !dsi(i) = (tm1%tm_year + 1900) * 10000 + (tm1%tm_mon +1) * 100 + tm1%tm_mday
        call idx2ymd(i, y, m, d)
        dsi(i) = y * 10000 + m * 100 + d
        !print *, i, dsi(i)
