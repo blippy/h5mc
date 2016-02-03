@@ -41,7 +41,7 @@ h5gap$(EXEEXT) : h5gap.f90
 	gfortran $^ -o $@
 
 h5plot$(EXEEXT) : h5plot.f90
-	gfortran `pkg-config --cflags --libs plplot-f95` $^ -o $@
+	gfortran $(PLPLOT_CFLAGS)  $^ -o $@ $(PLPLOT_LIBS)
 
 # do I need deciles anymore?
 deciles_SOURCES = deciles.f90

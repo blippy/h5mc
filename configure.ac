@@ -12,6 +12,8 @@ AC_MSG_NOTICE([Let's rock and roll])
 # Externally set CFLAGS
 EXTERNAL_CFLAGS="$CFLAGS"
 
+#AC_CHECK_FILE([/usr/local/lib/fortran/modules/plplot/plplot.mod],
+#	AC_SUBST([PLOT1], [-I/usr/local/lib/fortran/modules/plplot]))
 
 #AC_MSG_NOTICE([Fortran messy HDF5 checking])
 #AX_LIB_HDF5()
@@ -38,7 +40,7 @@ PKG_CHECK_MODULES([DT], [datetime-fortran])
 PKG_CHECK_MODULES([GSL], [gsl])
 PKG_CHECK_MODULES([MARKS_FGSL], [fgsl]) # sets $MARKS_FGSL_CFLAGS $MARKS_FGSL_LIBS
 #PKG_CHECK_MODULES([HDF5], [hdf5])
-
+PKG_CHECK_MODULES([PLPLOT], [plplot-f95])
 AC_MSG_NOTICE([Marks FGSL $MARKS_FGSL_CFLAGS])
 
 AC_PROG_FC([gfortran], [Fortran 90])
