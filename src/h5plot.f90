@@ -8,6 +8,7 @@ program h5plot
   character (len=10) :: dstamps(3), dstamp
   integer(kind=plint) :: yr,m,d
   integer :: i
+  character(:), allocatable :: driver, ofname
 
   scale = 365.242198781_plflt
   offset1 = -678940.0_plflt
@@ -39,9 +40,18 @@ program h5plot
 
 
   
-  print *, 'output will go to file myplot.png'
-  call plsdev('pngqt')
-  call plsfnam('myplot.png')
+  ! originally
+  driver = 'pngqt'
+  ofname = 'myplot.png'
+
+  ! possibly works better under cubie
+  driver = 'psc'
+  ofname = 'myplot.ps'
+
+  print *, 'output will go to file ', ofname
+  !call plsdev('pngqt')
+  call plsdev(driver)
+  call plsfnam(ofname)
   
   call plinit()
   call pladv(0)
