@@ -16,6 +16,7 @@ STD = -fcheck=all -ggdb
 
 bin_PROGRAMS = h5ade h5cut h5gap deciles rs6 mkepics
 # disabled h5plot from building - it requires a package
+bin_PROGRAMS += h5plot
 # old programs h5cold h5mc
 
 %.mod : %.f90

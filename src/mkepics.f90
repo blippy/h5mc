@@ -71,10 +71,11 @@ contains
 
   subroutine show(ticker)
     character(len=*), intent(in) :: ticker
-    
+    integer :: y, m, d
+ 
     !type(ncepics) :: nc
     !call check( nf90_create(FILE_NAME, nf90_netcdf4, ncid) )
-    print *, "called show on ticker: ", ticker, "."
+    !print *, "called show on ticker: ", ticker, "."
     call check(nf90_open(FILE_NAME, NF90_NOWRITE, ncid))
 
     call fill_ticker_prices(ticker) ! sets darr   
@@ -84,7 +85,10 @@ contains
     call check(nf90_close(ncid))
     
     do i=1,NVALS
-       if(darr(i).ne.-1.0d0) write(*, fmt = '(I8,X,F10.3)'), dsi(i), darr(i)
+      call idx2ymd(i, y, m, d)
+      if(darr(i).ne.-1.0d0) then 
+         write(*, fmt = '(I4,X,I0.2,XI0.2,X,F10.3)'), y, m, d, darr(i)
+      endif
     enddo
 
   end subroutine show
