@@ -1,9 +1,10 @@
 #define PRERR(e) print *, 'e', e
 program mkepics
-  use netcdf
+  !use netcdf
 
   !use maff
   use datetime_module
+  use fates
   use yahoo
   
   implicit none
@@ -12,16 +13,16 @@ program mkepics
   integer :: ncid, grp_ncid, varid, x_dimid, dimids(1), idx
   integer:: dsi(NVALS), i, status
   double precision:: darr(NVALS)
-  type(datetime)  :: dt, dt1
-  type(tm_struct) :: tm1
+  !type(datetime)  :: dt, dt1
+  !type(tm_struct) :: tm1
   double precision:: base
   type(ydec), allocatable :: ydecs(:)
-  type(ydec) :: y
+  type(ydec) :: yd
 
   character(len=32) :: arg, ticker, ystr, mstr, dstr
 
-  dt = datetime(year = 2004,month = 12,day=31)
-  base = date2num(dt)
+  !dt = datetime(year = 2004,month = 12,day=31)
+  !base = date2num(dt)
     
   ! parse arguments
   if(iargc().ge.1) then
@@ -44,6 +45,7 @@ program mkepics
      stop
   endif
 
+#if 0
   !http://www.unidata.ucar.edu/software/netcdf/netcdf-4/newdocs/netcdf-f90/NF90_005fCREATE.html
   status = nf90_create(FILE_NAME, ior(nf90_noclobber , nf90_hdf5), ncid)
   if(status.eq.nf90_eexist) then
@@ -54,16 +56,16 @@ program mkepics
   else
      call check(status)
   endif
-
+#endif
   call mkdsi()
   
 
   !call mkclose("JRS.L")
   !call mkgrp
   print *, 'closing'
-  call check( nf90_close(ncid) )
+  !call check( nf90_close(ncid) )
 
-  call prinerrs()
+  !call prinerrs()
   print *, '*** SUCCESS writing example file ', FILE_NAME, '!'
 
   
@@ -71,8 +73,19 @@ contains
 
   subroutine show(ticker)
     character(len=*), intent(in) :: ticker
-    integer :: y, m, d
- 
+    integer :: y, m, d, i
+    type(ydec) :: yd
+
+    if(.true.) then ! new way of doing things not reliant on netcdf
+      ydecs = read_ydecs(targ())
+      do i = 1, size(ydecs)
+         yd = ydecs(i)
+         write(*, fmt = '(I4,X,I0.2,XI0.2,X,F10.3)'), yd%y, yd%m, yd%d, yd%acls
+      enddo
+      return
+    endif
+
+#if 0     
     !type(ncepics) :: nc
     !call check( nf90_create(FILE_NAME, nf90_netcdf4, ncid) )
     !print *, "called show on ticker: ", ticker, "."
@@ -90,17 +103,18 @@ contains
          write(*, fmt = '(I4,X,I0.2,XI0.2,X,F10.3)'), y, m, d, darr(i)
       endif
     enddo
+#endif
 
   end subroutine show
 
   ! import decade worth of data
   subroutine impdec(ticker)
     character(len=*), intent(in) :: ticker
-
+#if 0
     call check(nf90_open(FILE_NAME, nf90_write, ncid))
     call mkclose(ticker)
     call check(nf90_close(ncid))
-    
+#endif    
   end subroutine impdec
   
   subroutine mkclose(ticker)
@@ -108,7 +122,7 @@ contains
     
     integer :: grp_ncid
     print *, 'calling mkclose'
-
+#if 0
     call check(nf90_inq_dimid(ncid, "nvals", x_dimid))
     dimids = [x_dimid]
     
@@ -129,25 +143,27 @@ contains
     ydecs = read_ydecs(ticker)
     darr = -1.0d0
     do i = 1, size(ydecs)
-       y = ydecs(i)
+       yd = ydecs(i)
 
        !write( *, fmt = "(I6,I8,X, I4,2I0.2)") , i, idx, y%y, y%m, y%d
-       idx = ymd2idx( y%y, y%m, y%d)
-       darr(idx) = y%acls
+       idx = ymd2idx( yd%y, yd%m, yd%d)
+       darr(idx) = yd%acls
     enddo
     call check( nf90_put_var(grp_ncid, varid, darr) )
     !forall(i=1, size(ydecs)) print *, ydecs(i)
     print *, "Leaving mkclose"
+#endif
   end subroutine mkclose
   
   subroutine check(status)
     integer, intent ( in) :: status
-    
+#if 0    
     if(status /= nf90_noerr) then
        print *, 'error code is value is ', status
       print *, trim(nf90_strerror(status))
       call abort
     end if
+#endif
   end subroutine check
 
 
@@ -156,11 +172,11 @@ contains
     integer :: y, m, d
     do i = 1, NVALS
        call idx2ymd(i, y, m, d)
-       dsi(i) = y * 10000 + m * 100 + d
+       dsi(i) = ymd2i(y, m, d)
        !print *, i, dsi(i)
     enddo
 
-    
+#if 0    
     status = nf90_inq_dimid(ncid, "nvals", x_dimid)
     if(status == nf90_noerr) then
        dimids = [x_dimid]
@@ -181,21 +197,10 @@ contains
 
   
   call check( nf90_put_var(ncid, varid, dsi) )
-  
+#endif  
 
   end subroutine mkdsi
 
-  !> print all the error codes
-  subroutine prinerrs
-    print *, 'error codes'
-    PRERR(NF90_ENOGRP)
-    PRERR(NF90_NOERR)
-    PRERR(NF90_EBADID)
-    PRERR(NF90_ENOTNC4)
-    PRERR(NF90_ESTRICTNC3)
-    PRERR(NF90_EHDFERR)
-    
-  end subroutine prinerrs
 
   !> ticker argument (2nd argument)
   function targ()
@@ -217,43 +222,39 @@ contains
   
   subroutine retr() !ticker, y, m, d)
     character(len=:), allocatable :: ticker
-    integer :: y, m, d
+    integer :: y, m, d, ymd
 
     y = arg2int(3)
     m = arg2int(4)
     d = arg2int(5)
     ticker = targ()
     print *, 'Ticker is:', ticker, '.'
-    call check(nf90_open(FILE_NAME, NF90_NOWRITE, ncid))
-    !call check(nf90_open(FILE_NAME, NF90_NOWRITE, ncid))
-    call get_dsi()
-    call fill_ticker_prices(ticker) 
-    call check(nf90_close(ncid))
+    ydecs = read_ydecs(ticker)
 
-    ! work backwards, bearing in mind that the current entry may be -1
-    do idx = ymd2idx(y,m,d), 1, -1
-       if(darr(idx).ne.-1) exit          
+    ymd = ymd2i(y, m, d)
+!print*,ymd
+    do i = size(ydecs), 1, -1 ! going backwards is likely to be more efficient
+      yd = ydecs(i)
+!print *, yd%ymd
+      if(ymd.ge.yd%ymd) then
+      print *, yd%acls, y, m, d
+      return
+endif
     enddo
 
-    call idx2ymd(idx, y, m, d) 
-    print *, "ticker", ticker, darr(idx), y, m, d
-    
-    
+    print *, "TODO: if you are here, then date unfound"
   end subroutine retr
 
-  !> assumes ncid open
-  subroutine get_dsi() ! sets dsi    
-    call check(nf90_inq_varid(ncid, "dsi", varid))
-    call check(nf90_get_var(ncid, varid, dsi))
-  end subroutine get_dsi
   
   !> Fill darr with prices for a ticker. Assumes ncid is open
   subroutine fill_ticker_prices(ticker)
     character(len=*), intent(in) :: ticker
+#if 0
     call check(nf90_inq_ncid(ncid, ticker, grp_ncid))
     call check(nf90_inq_varid(grp_ncid, "price", varid))
     !call check(nf90_inq_varid(nc%ncid, ticker, nc%varid))
     call check(nf90_get_var(grp_ncid, varid, darr))
+#endif
   end subroutine fill_ticker_prices
 
   !> Convert a year, month and date into a dsi index
@@ -268,6 +269,7 @@ contains
   subroutine idx2ymd(idx, y, m, d)
     integer, intent(in) :: idx
     integer, intent(out) :: y, m, d
+#if 0
     type(datetime) :: dt
     type(tm_struct) :: tm
     dt = num2date(idx + base)
@@ -275,5 +277,6 @@ contains
     y = tm%tm_year + 1900
     m = tm%tm_mon +1
     d = tm%tm_mday
+#endif
   end subroutine idx2ymd
 end program mkepics

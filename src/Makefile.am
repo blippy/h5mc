@@ -2,8 +2,8 @@ AM_CFLAGS = -I$(top_srcdir)/src
 AM_FFLAGS1 = $(AM_FFLAGS) $(MARKS_FGSL_CFLAGS) $(FCFLAGS)
 #-DPKGVER=\"$(PACKAGE_VERSION)\"
 
-NC_FFLAGS = $(shell nc-config --fflags)
-NC_FLIBS = $(shell nc-config --flibs)
+#NC_FFLAGS = $(shell nc-config --fflags)
+#NC_FLIBS = $(shell nc-config --flibs)
 
 # BUILT_SOURCES = a way of telling automake that some files need to be generated
 
@@ -19,7 +19,7 @@ bin_PROGRAMS = h5ade h5cut h5gap deciles rs6 mkepics
 bin_PROGRAMS += h5plot
 # old programs h5cold h5mc
 
-%.mod : %.f90
+%.o : %.f90
 	$(FC) -c $(STD) $< 
 
 #common.mod : common.f90
@@ -28,11 +28,16 @@ bin_PROGRAMS += h5plot
 #quant.mod : quant.f90
 #	gfortran -c quant.f90
 
+
+yahoo.o : yahoo.f90 fates.o
+	gfortran -c $(STD) $< -o $@
+
+
 h5ade_SOURCES = h5ade.f90
-h5ade.o : quant.mod h5ade.f90
-	gfortran -c h5ade.f90 quant.f90
+h5ade.o : h5ade.f90 quant.o
+	gfortran -c $(STD) $< -o $@
 h5ade$(EXEEXT) : h5ade.o quant.o
-	gfortran  -o h5ade quant.o h5ade.o
+	gfortran  $(STD) $^ -o $@
 
 h5cut$(EXEEXT) : h5cut.f90 common.o
 	gfortran $(AM_FFLAGS1) $^ -o $@  $(MARKS_FGSL_LIBS)
@@ -63,10 +68,10 @@ rs6$(EXEEXT): rs6.o
 #h5mc_LDADD = $(HDF5_LIBS)
 #h5mc_SOURCES = h5print.c
 
-mkepics_SOURCES = mkepics.f90 yahoo.f90
+mkepics_SOURCES = mkepics.f90 fates.f90 yahoo.f90
 
-mkepics.o : mkepics.f90 yahoo.mod
+mkepics.o : mkepics.f90  fates.o yahoo.o
 	gfortran -c $(STD)  $(DT_CFLAGS) $(NC_FFLAGS) -cpp $< -o $@
 
 mkepics$(EXEXT) : mkepics.o yahoo.o
-	gfortran -o $@  $^  $(DT_LIBS) $(NC_FLIBS)
+	gfortran $(NC_FFLAGS) -o $@  $^  $(DT_LIBS) $(NC_FLIBS)

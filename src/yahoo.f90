@@ -1,8 +1,11 @@
 module yahoo
 
+  use fates
+
   ! yahoo decade record
   type ydec
      integer :: y, m, d ! year, month, day
+     integer :: ymd ! YYYYMMDD
      double precision :: opn, high, low, cls
      integer :: vol
      double precision :: acls ! adjusted close
@@ -36,9 +39,10 @@ contains
     
     integer, parameter :: dims = 3000
     type(ydec) :: ydecs(dims)
+    type(ydec) :: yd
 
     fname = "/home/mcarter/.fortran/" //  ticker // "/raw.dat"
-    print *, "calling read_ydecs on ticker file:", fname
+    !print *, "calling read_ydecs on ticker file:", fname
     open(newunit =u, file = fname, action='read') ! , stream='Stream_LF')
     read (u, *), hdr
     !print *, hdr
@@ -47,11 +51,13 @@ contains
        n = n +1
        !if(n.gt.ndims) stop
        read (unit = u, fmt = '(I4,X, I2, X, I2)', iostat = stat, &
-            advance = 'no'), &
-            ydecs(n)%y, ydecs(n)%m ,  ydecs(n)%d
+            advance = 'no'), y, m, d
+!            ydecs(n)%y, ydecs(n)%m ,  ydecs(n)%d
        if(stat /= 0) exit
-       read (unit = u, fmt = *), x, ydecs(n)%opn,  ydecs(n)%high,  &
-            ydecs(n)%low , ydecs(n)%cls,  ydecs(n)%vol,  ydecs(n)%acls
+       read (unit = u, fmt = *), x, opn,  high,  &
+            low , cls,  vol,  acls
+!       yd%ymd - ymd2i(y, m ,d)
+       ydecs(n) = ydec(y, m, d, ymd2i(y, m, d), opn, high, low, cls, vol, acls)
 !       print *, y, m, d, opn, high, low, cls, vol, adjc
     enddo
     n = n -1
@@ -62,7 +68,7 @@ contains
     !do i =1,n
     !   print *, res(i)
     !enddo
-    print *, "finished"
+    !print *, "finished"
   end function read_ydecs
 
 end module yahoo
