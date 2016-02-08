@@ -35,13 +35,9 @@ url="$pre$f0&$f1$post"
 
 echo $url
 
-reorder () {
-    # reverse the order of the files
-    # and move the header from the bottom to the top
-    tac  | sed '1h;1d;$!H;$!d;G'
-}
 
-curl -s $url |  reorder >$sym
+curl -s $url > raw.dat 
+h5sort raw.dat
 #{if(T=1) { k = print arr[2], T}'
 
 

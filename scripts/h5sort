@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# resort raw.dat file
+
+# the sed line moves the header line back from the bottom to the top
+sort raw.dat | sed '1h;1d;$!H;$!d;G' | sponge raw.dat

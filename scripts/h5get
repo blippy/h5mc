@@ -11,7 +11,7 @@ echo "Symbol to fetch, based on directory name: $SYM"
 #mython yahoo "$SYM" > raw.dat
 
 ydec "$SYM"
-mv "$SYM" raw.dat
+#mv "$SYM" raw.dat
 
 set +x
 echo "h5get end"
