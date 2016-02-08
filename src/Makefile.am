@@ -14,7 +14,7 @@ CLEANFILES = *.mod
 
 STD = -fcheck=all -ggdb
 
-bin_PROGRAMS = h5ade h5cut h5gap deciles rs6 mkepics
+bin_PROGRAMS = h5ade h5cut h5gap deciles rs6 mkepics fatest
 # disabled h5plot from building - it requires a package
 bin_PROGRAMS += h5plot
 # old programs h5cold h5mc
@@ -65,8 +65,6 @@ rs6$(EXEEXT): rs6.o
 #h5cold_LDADD = $(HDF5_LIBS)
 #h5cold_SOURCES = h5cold.c
 
-#h5mc_LDADD = $(HDF5_LIBS)
-#h5mc_SOURCES = h5print.c
 
 mkepics_SOURCES = mkepics.f90 fates.f90 yahoo.f90
 
@@ -75,3 +73,9 @@ mkepics.o : mkepics.f90  fates.o yahoo.o
 
 mkepics$(EXEXT) : mkepics.o yahoo.o
 	gfortran $(NC_FFLAGS) -o $@  $^  $(DT_LIBS) $(NC_FLIBS)
+
+
+
+fatest$(EXEEXT) : fatest.o fates.o
+	gfortran  $^ -o $@
+

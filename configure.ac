@@ -3,7 +3,7 @@
 
 AC_PREREQ([2.69])
 AC_INIT([h5mc], [0.1], [alt.mcarter@gmail.com])
-AC_CONFIG_SRCDIR([src/h5print.c])
+AC_CONFIG_SRCDIR([src/mkepics.f90])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([foreign])
 PKG_PROG_PKG_CONFIG
@@ -87,7 +87,7 @@ AC_FC_MODULE_FLAG
 #AC_SEARCH_LIBS([h5open_f], [hdf5_fortran],
 #   [echo "Found HDF5 Fortran library"],
 #   [echo "Did not find HDF5 Fortran library"])
-AX_LIB_HDF5() # http://www.gnu.org/software/autoconf-archive/ax_lib_hdf5.html
+#AX_LIB_HDF5() # http://www.gnu.org/software/autoconf-archive/ax_lib_hdf5.html
 AC_MSG_NOTICE([Hello world])
 #if test "$with_hdf5" = "yes"; then
 #   AC_MSG_RESULT([HDF5 found])
