@@ -12,6 +12,8 @@ using std::endl;
 using std::vector;
 using std::string;
 
+bool debug_lexer = false;
+/*
 typedef vector<string> strings;
 typedef struct { string name; bool is_string; strings sfields; vector<double> dfields; } col_t;
 
@@ -32,7 +34,18 @@ void cell(bool is_quoted)
 	if(!is_quoted) cout << "un" ;
 	cout << "quoted cell: <" << yytext << ">" << endl; 
 }
+*/
 
+void lwrite(const char *type, const char *val)
+{
+	if(debug_lexer) { 
+		cout << type << ": <" << val << ">" << endl; 
+	}
+}
+
+#define RETURN(X) if(!debug_lexer) return X
+#include "shsl.tab.h" // for tokens	
+#define YY_DECL extern "C" int yylex()
 %}
 
 %option noyywrap
@@ -40,15 +53,14 @@ void cell(bool is_quoted)
 %%
 
 
-",\r"|"\r"	{ puts("EOR"); row++; col = 0 ; }
+",\r"|"\r"	{ lwrite("EOR", ""); RETURN(RS); }
 
-TODO MUST account for empty field
 
-","  { puts("FS"); col++ ; }
+","  { lwrite("FS", ",");  RETURN(FS); }
 
-\"([^\\\"]|\\.)*\"  { cell(true);}
+\"([^\\\"]|\\.)*\"  { lwrite("qstr", yytext); yylval.str = yytext; RETURN(QSTR) ;}
 
-[^,\r]+          { cell(false) ; }
+[^,\r]+          { yylval.str = yytext; RETURN(USTR) ; }
 
 
 %%
@@ -56,15 +68,17 @@ TODO MUST account for empty field
 //extern "C"
 int main_lex()
 {
+	debug_lexer = true;
 	yyin = fopen("/home/mcarter/cubie/home/mcarter/data/StatsList.csv", "r");
 	yylex();
-
+/*
 	if(debugging) {
 		cout << "Fields are:" << endl;
 		for(auto &c: columns) {
 			cout << c.name << "\t" << c.is_string << endl ;
 		}
 	}
+*/
 	return EXIT_SUCCESS;
 }
 

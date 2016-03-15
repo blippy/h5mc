@@ -5,3 +5,7 @@ h5cut
 lex.yy.c
 lexy
 mkepics
+shsl
+shsl.tab.c
+shsl.tab.h
+shsly
