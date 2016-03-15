@@ -2,4 +2,6 @@
 *.cmo
 *.mod
 h5cut
+lex.yy.c
+lexy
 mkepics

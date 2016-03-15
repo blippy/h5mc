@@ -10,13 +10,16 @@ AM_FFLAGS1 = $(AM_FFLAGS) $(MARKS_FGSL_CFLAGS) $(FCFLAGS)
 # Install my_script in $(bindir) and distribute it.
 #dist_bin_SCRIPTS = h5get
 
-CLEANFILES = *.mod
+CLEANFILES = *.mod lex.yy.c
 
 STD = -fcheck=all -ggdb
 
-bin_PROGRAMS = h5ade h5cut h5gap deciles rs6 mkepics fatest
+bin_PROGRAMS = h5ade h5gap 
 # disabled h5plot from building - it requires a package
-bin_PROGRAMS += h5plot
+#bin_PROGRAMS += h5plot
+#bin_PROGRAMS += h5cut deciles mkepics rs6 fatest
+bin_PROGRAMS += lexy
+
 # old programs h5cold h5mc
 
 %.o : %.f90
@@ -28,6 +31,11 @@ bin_PROGRAMS += h5plot
 #quant.mod : quant.f90
 #	gfortran -c quant.f90
 
+lex.yy.c : shsl.l
+	flex shsl.l
+
+lexy : lex.yy.c
+	g++ -std=gnu++11 -Dmain_lex=main lex.yy.c -o lexy
 
 yahoo.o : yahoo.f90 fates.o
 	gfortran -c $(STD) $< -o $@
