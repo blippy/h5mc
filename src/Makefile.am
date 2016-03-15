@@ -39,7 +39,7 @@ shsl.tab.c shsl.tab.h : shsl.y
 #	g++  -std=gnu++11  -c $< -o $@
 
 shsl : shsl.c shsl.tab.c lex.yy.c
-	g++  -std=gnu++11  -ggdb $^ -o $@
+	g++  -std=gnu++11  -ggdb $^ -lhdf5 -o $@
 
 lex.yy.c : shsl.l shsl.tab.h
 	flex shsl.l

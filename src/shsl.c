@@ -1,9 +1,12 @@
 #include <iostream>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <vector>
 #include <string>
 #include <assert.h>
 #include <algorithm>
+#include <sys/stat.h>
 
 #include "hdf5.h"
 
@@ -15,7 +18,7 @@ using std::endl;
 using std::vector;
 using std::string;
 
-using namespace H5;
+//using namespace H5;
 
 //int ymain();
 strmat bison_main();
@@ -69,6 +72,7 @@ void read_csv(strmat &sheet, vector<col_s> &cvecs)
 		}
 	}
 
+#if 0
 	for(auto c: cvecs) {
 		cout << c.name << "\t" << c.is_num << "\t" << endl;
 		if(c.is_num) { 
@@ -80,13 +84,61 @@ void read_csv(strmat &sheet, vector<col_s> &cvecs)
 		}
 
 	}
+#endif
 
 }
 
 void write_h5(const vector<col_s> &cvecs)
 {
-	H5File* file = new H5File("/home/mcarter/foo.h5", H5F_ACC_RDWR);
-	delete file;
+	char fname[] = "/home/mcarter/cubie/home/mcarter/data/sharelock.h5";
+	//char fname[] = "/home/mcarter/sharelock.h5";
+
+	struct stat st;
+	stat(fname, &st);
+	time_t t = st.st_mtime;
+	struct tm atm;
+	localtime_r(&t, &atm);
+	char dtstamp[80];
+	strftime(dtstamp, sizeof(dtstamp), "/D%Y%m%d", &atm);
+	puts(dtstamp);
+
+	hid_t file = H5Fopen(fname, H5F_ACC_RDWR, H5P_DEFAULT);
+	hid_t gid = H5Gcreate(file, dtstamp, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+	for(auto &c: cvecs) {
+		if(c.is_num) {
+			hsize_t dims[1];
+			dims[0] = c.ds.size();
+			hid_t dspace = H5Screate_simple(1, dims, NULL);
+			hid_t dset = H5Dcreate2(gid, c.name.c_str(), H5T_NATIVE_DOUBLE, dspace, 
+					                          H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+			H5Dwrite(dset, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, &c.ds[0]);
+			H5Dclose(dset);
+			H5Sclose(dspace);
+		} else { // strings
+			//hsize_t dims[1];
+
+			//dims[0] = c.strs.size();
+			hsize_t dims[1] = { c.strs.size()};
+			hid_t dspace = H5Screate_simple(1, dims, NULL);
+			hid_t dtype = H5Tcopy(H5T_C_S1);
+			int size = c.strlen;
+			H5Tset_size(dtype, size);
+			
+			char *data = (char *)calloc(c.strs.size(), c.strlen);
+			for(int rnum =0; rnum < c.strs.size();  rnum++) { 
+				strncpy(data + rnum*c.strlen, c.strs[rnum].c_str(), c.strs[rnum].size()); }
+
+			hid_t dset = H5Dcreate2(gid, c.name.c_str(), dtype, dspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+			H5Dwrite(dset, dtype, H5S_ALL, H5S_ALL, H5P_DEFAULT, data);
+			free(data);
+			H5Dclose(dset);
+			H5Sclose(dspace);
+		} 
+
+	}
+
+	H5Gclose(gid);
+	H5Fclose(file);
 
 }
 
