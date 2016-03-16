@@ -106,6 +106,8 @@ void write_h5(const vector<col_s> &cvecs)
 	hid_t gid = H5Gcreate(file, dtstamp, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 	for(auto &c: cvecs) {
 		if(c.is_num) {
+			write_doubles_h5(gid, c.name.c_str(), c.ds);
+			/*
 			hsize_t dims[1];
 			dims[0] = c.ds.size();
 			hid_t dspace = H5Screate_simple(1, dims, NULL);
@@ -114,7 +116,8 @@ void write_h5(const vector<col_s> &cvecs)
 			H5Dwrite(dset, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, &c.ds[0]);
 			H5Dclose(dset);
 			H5Sclose(dspace);
-		} else { // strings
+			*/
+		} else { // strings // TODO put to common.cc
 			//hsize_t dims[1];
 
 			//dims[0] = c.strs.size();

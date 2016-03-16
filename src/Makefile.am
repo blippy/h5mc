@@ -18,12 +18,12 @@ bin_PROGRAMS = h5ade h5gap
 # disabled h5plot from building - it requires a package
 #bin_PROGRAMS += h5plot
 #bin_PROGRAMS += h5cut deciles mkepics rs6 fatest
-bin_PROGRAMS += shsl
+bin_PROGRAMS += shsl h5new
 
 # old programs h5cold h5mc
 
-%.o : %.f90
-	$(FC) -c $(STD) $< 
+#%.o : %.f90
+#	$(FC) -c $(STD) $< 
 
 #common.mod : common.f90
 #	gfortran -c common.f90
@@ -38,8 +38,12 @@ shsl.tab.c shsl.tab.h : shsl.y
 #shsly.o : shsl.tab.c lex.yy.c
 #	g++  -std=gnu++11  -c $< -o $@
 
-shsl : shsl.c shsl.tab.c lex.yy.c
+
+shsl : shsl.c shsl.tab.c lex.yy.c common.o
 	g++  -std=gnu++11  -ggdb $^ -lhdf5 -o $@
+
+h5new : h5new.cc common.o 
+	g++  -std=gnu++11  $^ -lhdf5 -o $@
 
 lex.yy.c : shsl.l shsl.tab.h
 	flex shsl.l
@@ -50,6 +54,8 @@ shsll : lex.yy.c
 yahoo.o : yahoo.f90 fates.o
 	gfortran -c $(STD) $< -o $@
 
+common.o : common.cc
+	g++ -std=gnu++11 -c $<
 
 h5ade_SOURCES = h5ade.f90
 h5ade.o : h5ade.f90 quant.o
