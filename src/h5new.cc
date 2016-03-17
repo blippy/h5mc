@@ -30,6 +30,9 @@ void write_h5()
 	auto ds = doubles { 6.765, 9.877, 5.732, 4.902, 7.071, 4.668, 0.664, 2.235, 8.897, 7.902};
 	write_doubles_h5(gid, "doubles", ds);
 
+	auto strs = strings {"the", "hare", "and", "the", "tortoise"};
+	write_strings_h5(gid, "aesop", strs);
+
 	H5Gclose(gid);
 	H5Fclose(fid);
 

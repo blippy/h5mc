@@ -118,24 +118,7 @@ void write_h5(const vector<col_s> &cvecs)
 			H5Sclose(dspace);
 			*/
 		} else { // strings // TODO put to common.cc
-			//hsize_t dims[1];
-
-			//dims[0] = c.strs.size();
-			hsize_t dims[1] = { c.strs.size()};
-			hid_t dspace = H5Screate_simple(1, dims, NULL);
-			hid_t dtype = H5Tcopy(H5T_C_S1);
-			int size = c.strlen;
-			H5Tset_size(dtype, size);
-			
-			char *data = (char *)calloc(c.strs.size(), c.strlen);
-			for(int rnum =0; rnum < c.strs.size();  rnum++) { 
-				strncpy(data + rnum*c.strlen, c.strs[rnum].c_str(), c.strs[rnum].size()); }
-
-			hid_t dset = H5Dcreate2(gid, c.name.c_str(), dtype, dspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-			H5Dwrite(dset, dtype, H5S_ALL, H5S_ALL, H5P_DEFAULT, data);
-			free(data);
-			H5Dclose(dset);
-			H5Sclose(dspace);
+			write_strings_h5(gid, c.name.c_str(), c.strs);
 		} 
 
 	}
