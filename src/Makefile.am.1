@@ -1,17 +1,16 @@
-#AM_YFLAGS = -d
-#AM_CFLAGS = -I$(top_srcdir)/src
-#AM_FFLAGS1 = $(AM_FFLAGS) $(MARKS_FGSL_CFLAGS) $(FCFLAGS)
+AM_CFLAGS = -I$(top_srcdir)/src
+AM_FFLAGS1 = $(AM_FFLAGS) $(MARKS_FGSL_CFLAGS) $(FCFLAGS)
 #-DPKGVER=\"$(PACKAGE_VERSION)\"
 
 #NC_FFLAGS = $(shell nc-config --fflags)
 #NC_FLIBS = $(shell nc-config --flibs)
 
 # BUILT_SOURCES = a way of telling automake that some files need to be generated
-#BUILT_SOURCES = shsl.tab.h
+
 # Install my_script in $(bindir) and distribute it.
 #dist_bin_SCRIPTS = h5get
 
-#CLEANFILES = *.mod lex.yy.c shsl.tab.cc shsl.tab.c shsl.tab.h
+CLEANFILES = *.mod lex.yy.c shsl.tab.c shsl.tab.c shsl.tab.h
 
 STD = -fcheck=all -ggdb
 
@@ -22,51 +21,57 @@ STD = -fcheck=all -ggdb
 #bin_PROGRAMS += h5cut deciles mkepics rs6 fatest
 bin_PROGRAMS = shsl h5new
 
-h5new_LDADD = -lhdf5
-h5new_SOURCES = h5new.cc common.cc
-
 # old programs h5cold h5mc
 
-#shsl_SOURCES = shsl.cc shsl.tab.c lex.yy.c common.cc
-shsl_LDADD = -lhdf5
-shsl_SOURCES = shsl.cc common.cc
+#%.o : %.f90
+#	$(FC) -c $(STD) $< 
 
-#shsl.tab.cc shsl.tab.h : shsl.y 
-#	bison -d $^ -output shsl.tab.cc
+#common.mod : common.f90
+#	gfortran -c common.f90
+
+#quant.mod : quant.f90
+#	gfortran -c quant.f90
 
 
-#shsl : shsl.c shsl.tab.c lex.yy.c common.o
-#	g++  -std=gnu++11  -ggdb $^ -lhdf5 -o $@
+shsl.tab.c shsl.tab.h : shsl.y 
+	bison -d $^
 
-#h5new : h5new.cc common.o 
-#	g++  -std=gnu++11  $^ -lhdf5 -o $@
+#shsly.o : shsl.tab.c lex.yy.c
+#	g++  -std=gnu++11  -c $< -o $@
 
-#lex.yy.c : shsl.l shsl.tab.h
-#	flex shsl.l
 
-#shsll : lex.yy.c
-#	g++ -std=gnu++11 -Dmain_lex=main lex.yy.c -o $@
+shsl : shsl.c shsl.tab.c lex.yy.c common.o
+	g++  -std=gnu++11  -ggdb $^ -lhdf5 -o $@
 
-#yahoo.o : yahoo.f90 fates.o
-#	gfortran -c $(STD) $< -o $@
+h5new : h5new.cc common.o 
+	g++  -std=gnu++11  $^ -lhdf5 -o $@
 
-#common.o : common.cc
-#	g++ -std=gnu++11 -c $<
+lex.yy.c : shsl.l shsl.tab.h
+	flex shsl.l
 
-#h5ade_SOURCES = h5ade.f90
-#h5ade.o : h5ade.f90 quant.o
-#	gfortran -c $(STD) $< -o $@
-#h5ade$(EXEEXT) : h5ade.o quant.o
-#	gfortran  $(STD) $^ -o $@
+shsll : lex.yy.c
+	g++ -std=gnu++11 -Dmain_lex=main lex.yy.c -o $@
 
-#h5cut$(EXEEXT) : h5cut.f90 common.o
-#	gfortran $(AM_FFLAGS1) $^ -o $@  $(MARKS_FGSL_LIBS)
+yahoo.o : yahoo.f90 fates.o
+	gfortran -c $(STD) $< -o $@
 
-#h5gap$(EXEEXT) : h5gap.f90
-#	gfortran $^ -o $@
+common.o : common.cc
+	g++ -std=gnu++11 -c $<
 
-#h5plot$(EXEEXT) : h5plot.f90
-#	gfortran $(PLPLOT_CFLAGS)  $^ -o $@ $(PLPLOT_LIBS)
+h5ade_SOURCES = h5ade.f90
+h5ade.o : h5ade.f90 quant.o
+	gfortran -c $(STD) $< -o $@
+h5ade$(EXEEXT) : h5ade.o quant.o
+	gfortran  $(STD) $^ -o $@
+
+h5cut$(EXEEXT) : h5cut.f90 common.o
+	gfortran $(AM_FFLAGS1) $^ -o $@  $(MARKS_FGSL_LIBS)
+
+h5gap$(EXEEXT) : h5gap.f90
+	gfortran $^ -o $@
+
+h5plot$(EXEEXT) : h5plot.f90
+	gfortran $(PLPLOT_CFLAGS)  $^ -o $@ $(PLPLOT_LIBS)
 
 # do I need deciles anymore?
 #deciles_SOURCES = deciles.f90
@@ -96,6 +101,6 @@ shsl_SOURCES = shsl.cc common.cc
 
 
 
-#fatest$(EXEEXT) : fatest.o fates.o
-#	gfortran  $^ -o $@
+fatest$(EXEEXT) : fatest.o fates.o
+	gfortran  $^ -o $@
 

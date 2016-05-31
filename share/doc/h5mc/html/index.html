@@ -20,14 +20,17 @@ and dataset of doubles (<code>doubles</code>).
 
 sharelock holmes stats list
 
-<p>Imports /home/mcarter/cubie/home/mcarter/data/StatsList.csv into sharelock.h5 in the same directory, giving it a datestamp corresponding to the creation date of the CSV file. the file should NOT be preporcessed first. It is able to work out if the columns are strings or numerica data (string data always begins with a double-quote). </p>
+<p>Imports 
+<code>/home/mcarter/.fortran/STATSLIST/StatsList.csv</code>
+into file
+<code>/home/mcarter/.fortran/sharelock.h5</code>
+, giving it a datestamp corresponding to the creation date of the CSV file. 
+
+The file should NOT be preprocessed beforehand. It is able to work out if the columns are strings or numerica data (string data always begins with a double-quote). </p>
 
 
-<p>Interesting files for you to look at when considering further projects:</p>
-<ul>
-	<li>shsl.c - contains complete HDF5 processing, and is able to process string as well as doubles</li>
-	<li>shsl.l and shsl.y are lex and yacc file that read the CSV data </li>
-</ul>
+<p>Prior to May 2016, processing was done using flex and bison. This has been eliminated, although source files are in the yacc directory at the top level. </p>
+
 
 
   </body>
