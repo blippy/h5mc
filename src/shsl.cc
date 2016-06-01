@@ -118,19 +118,6 @@ void read_csv(vector<col_s> &cvecs)
 	int ncols = hdr.size();
 	m.erase(m.begin()); // eliminate the header from the data
 
-	//for(auto r: hdr){ cout << "col: " << r << "\n" ; }
-	//cout << raw ;
-
-
-	// set up basic structure of columns
-	/*
-	for(int cnum = 0; cnum < sheet[0].size(); cnum++) {
-		col_s cvec; 
-		cvec.name = sheet[0][cnum]; 
-		cvec.is_num = is_num(sheet[1][cnum]);
-		cvecs.push_back(cvec); 
-	}
-	*/
 	for(int cnum = 0; cnum < ncols; cnum++){
 		col_s cvec;
 		cvec.name = hdr[cnum];
@@ -140,26 +127,6 @@ void read_csv(vector<col_s> &cvecs)
 
 
 
-	/*
-	for(auto rit = sheet.begin()+1; rit < sheet.end(); rit++) {
-		strings row = *rit;
-		assert(row.size() == cvecs.size());
-		for(int cnum=0 ; cnum < row.size(); cnum ++) {
-			col_s &col = cvecs[cnum];
-			string str = row[cnum];
-			assert(is_num(str) == col.is_num);
-			if(col.is_num) {
-				double d = str.size() == 0 ? NAN : stod(str);
-				col.ds.push_back(d);
-			} else {
-				string goo = " \"";
-				string str1 = trim(str, goo);
-				col.strlen = std::max(col.strlen, (int)str1.size());
-				col.strs.push_back(str1);
-			}
-		}
-	}
-	*/
 	for(auto row: m) {
 		//row.pop_back(); // last item is bogus
 		//cout << ncols << " "  << row.size() << "\n" ;
@@ -186,12 +153,9 @@ void read_csv(vector<col_s> &cvecs)
 
 void write_h5(const vector<col_s> &cvecs)
 {
-	//char fname[] = "/home/mcarter/cubie/home/mcarter/data/sharelock.h5";
-	//char fname[] = "/home/mcarter/sharelock.h5";
-	char fname[] = "/home/mcarter/.fortran/sharelock.h5";
 
 	struct stat st;
-	stat(fname, &st);
+	stat(h5name, &st);
 	time_t t = st.st_mtime;
 	struct tm atm;
 	localtime_r(&t, &atm);
@@ -199,7 +163,7 @@ void write_h5(const vector<col_s> &cvecs)
 	strftime(dtstamp, sizeof(dtstamp), "/D%Y%m%d", &atm);
 	puts(dtstamp);
 
-	hid_t file = H5Fopen(fname, H5F_ACC_RDWR, H5P_DEFAULT);
+	hid_t file = H5Fopen(h5name, H5F_ACC_RDWR, H5P_DEFAULT);
 	hid_t gid = H5Gcreate(file, dtstamp, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 	for(auto &c: cvecs) {
 		if(c.is_num) {

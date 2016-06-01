@@ -3,6 +3,9 @@
 
 #include "common.h"
 
+//char fname[] = "/home/mcarter/cubie/home/mcarter/data/sharelock.h5";
+//char fname[] = "/home/mcarter/sharelock.h5";
+char h5name[] = "/home/mcarter/.fortran/sharelock.h5";
 
 //void write_strings_h5(gid, c,name.c_str(), c.strings)
 void write_strings_h5(hid_t loc_id, const char *varname, const strings &strs)

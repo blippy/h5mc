@@ -6,6 +6,8 @@
 
 #include "hdf5.h"
 
+extern char h5name[];
+
 typedef std::vector<double> doubles;
 typedef std::vector<std::string> strings;
 typedef std::vector<strings> strmat; // string matrix

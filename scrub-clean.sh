@@ -17,3 +17,5 @@ clean_dir src
 #clean_dir src/tests
 rm -f src/tests/*log src/tests/*.trs
 rm -f test-driver
+
+rm -f src/h5rank

@@ -25,6 +25,7 @@ AC_MSG_NOTICE([Let's rock and roll])
 # Reset the externally set CFLAGS after calling AC_PROG*
 #CFLAGS="$EXTERNAL_CFLAGS"
 
+#AC_SEARCH_LIBS([crud]
 
 # Use the C language and compiler
 AC_PROG_CXX
