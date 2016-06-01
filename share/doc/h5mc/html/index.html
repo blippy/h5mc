@@ -15,7 +15,18 @@ Create a new HDF5 file called <code>new.h5</code> containing a sample group (<co
 and dataset of doubles (<code>doubles</code>). 
 
 <p>The file will not be overwritten if it already exists. An error will be generated. </p>
-    
+
+
+<hr><h2><code>h5rank</code></h2>
+
+Creates a Greenblatt-esque score based on yield and gearing. I haven't properly verified it, but it looks like it is giving reasonable results.
+
+<p>It relies on the cxxstats library that I have created. It shouldn't be a problem if you have done a <code>make install</code> on the library in question. </p>
+
+<p>I grow weary of HDF5. h5rank does not use HDF5.</p>
+
+<p>h5rank has hard-coded fields to extract. I could generalise it if I need it in future. It is important, though, because it decodes the StatsList.csv file.</p>
+
 <hr><h2><code>shsl</code></h2>
 
 sharelock holmes stats list

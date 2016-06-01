@@ -20,19 +20,20 @@ STD = -fcheck=all -ggdb
 # disabled h5plot from building - it requires a package
 #bin_PROGRAMS += h5plot
 #bin_PROGRAMS += h5cut deciles mkepics rs6 fatest
-bin_PROGRAMS = shsl h5new h5rank
+#bin_PROGRAMS = shsl h5new h5rank
+bin_PROGRAMS = h5rank
 
-h5new_LDADD = -lhdf5
-h5new_SOURCES = h5new.cc common.cc
+#h5new_LDADD = -lhdf5
+#h5new_SOURCES = h5new.cc common.cc
 
-h5rank_LDADD = -lhdf5 -lcxxstats
+h5rank_LDADD =  -lcxxstats
 h5rank_SOURCES = h5rank.cc common.cc
 
 # old programs h5cold h5mc
 
 #shsl_SOURCES = shsl.cc shsl.tab.c lex.yy.c common.cc
-shsl_LDADD = -lhdf5
-shsl_SOURCES = shsl.cc common.cc
+#shsl_LDADD = -lhdf5
+#shsl_SOURCES = shsl.cc common.cc
 
 #shsl.tab.cc shsl.tab.h : shsl.y 
 #	bison -d $^ -output shsl.tab.cc
