@@ -22,18 +22,6 @@ using std::cout;
 using std::vector;
 using std::string;
 
-doubles get_doubles(std::map<string, col_s> colmap, string colname, double way)
-{
-	doubles ds;
-	assert(colmap[colname].is_num);
-	for(auto d: colmap[colname].ds) {
-		double d1 = d * way;
-		if(std::isnan(d1)) d1 = std::numeric_limits<double>::infinity();
-		ds.push_back(d1);
-	}
-
-	return ds;
-}
 
 
 typedef struct { string epic; double ds1; double rank1; double ds2; 
@@ -57,26 +45,22 @@ void dout(double d)
 
 int main()
 {
-	//vector<string> epics = read_strings_h5(lid, "F.EPIC");
-	vector<col_s> cols;
-	read_csv(cols);
-
-	std::map<string, col_s> colmap;
-	for(auto c:cols) colmap[c.name] = c;
+	//colmap cm = make_colmap();
+	coldata cd;
+	cd.read();
 
 
-	//for(auto e: colmap["F.EPIC"].strs) cout << "*" << e << "*\n" ;
-
-	doubles ds1 = get_doubles(colmap, "Gearing", 1);
+	doubles ds1 = cd.get_doubles("Gearing", 1);
 	doubles rank1 = frank(ds1);
-	doubles ds2 = get_doubles(colmap, "Yield", -1);
+	doubles ds2 = cd.get_doubles("Yield", -1);
 	doubles rank2 = frank(ds2);
-
+	strings epics = cd.get_strings("F.EPIC");
+//	for(auto s: epics) cout << s;
 
 	vector<resstruct> rs;
 	for(auto i=0; i< ds1.size(); i++) {
 		resstruct r;
-		r.epic = colmap["F.EPIC"].strs[i];
+		r.epic = epics[i];
 		r.ds1 = ds1[i];
 		r.rank1 = rank1[i];
 		r.ds2 = ds2[i];

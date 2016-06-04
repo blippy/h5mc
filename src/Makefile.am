@@ -21,13 +21,20 @@ STD = -fcheck=all -ggdb
 #bin_PROGRAMS += h5plot
 #bin_PROGRAMS += h5cut deciles mkepics rs6 fatest
 #bin_PROGRAMS = shsl h5new h5rank
-bin_PROGRAMS = h5rank
+
+LDADD = -lcxxstats
+bin_PROGRAMS = h5query h5rank
 
 #h5new_LDADD = -lhdf5
 #h5new_SOURCES = h5new.cc common.cc
 
-h5rank_LDADD =  -lcxxstats
+h5query_SOURCES = h5query.cc common.cc
+
+#h5rank_LDADD =  -lcxxstats
 h5rank_SOURCES = h5rank.cc common.cc
+
+
+
 
 # old programs h5cold h5mc
 
