@@ -13,7 +13,7 @@
 #include <sys/stat.h>
 #include <map>
 
-#include "common.h"
+#include "common.hpp"
 
 
 bool is_num(string &s) { return s.size() == 0 || s[0] != '"' ; }
@@ -112,8 +112,6 @@ void read_csv(vector<col_s> &cvecs)
 
 
 	for(auto row: m) {
-		//row.pop_back(); // last item is bogus
-		//cout << ncols << " "  << row.size() << "\n" ;
 		assert(ncols == row.size());
 
 		for(int cnum=0; cnum < ncols; cnum++){
@@ -142,38 +140,17 @@ void coldata::read()
 	vector<col_s> cols;
 	read_csv(cols);
 	for(auto c:cols) {
-		//res[c.name] = c;
-		//is_num[c.name] = c.is_num;
-		//num_rows = c.
-
-
-	//std::cout << c.strs.size();
 		cells vals;
 		if(c.is_num)
 		       	for(auto v: c.ds) {vals.push_back(v); }
 		else 			
 			for(auto v: c.strs) vals.push_back(v);
 		column[c.name] = vals;
-		//	column[c.name] = c.strs;
-		//else
-		//	column[c.name] = c.ds;
 	}
 }
 
 strings coldata::get_strings(string colname)
 {
-	/*
-	doubles ds;
-`	
-	assert(colmap[colname].is_num);
-	for(auto d: colmap[colname].ds) {
-		double d1 = d * scale;
-		if(std::isnan(d1)) d1 = std::numeric_limits<double>::infinity();
-		ds.push_back(d1);
-	}
-
-	return ds;
-	*/
 	strings res;
 	cells cs = column[colname];
 	for(auto s: cs) res.push_back(boost::get<string>(s));
@@ -184,13 +161,6 @@ strings coldata::get_strings(string colname)
 doubles coldata::get_doubles(string colname, double scale)
 {
 	doubles ds;
-	//assert(colmap[colname].is_num);
-	//for(auto d: colmap[colname].ds) {
-	//	double d1 = d * scale;
-	//	if(std::isnan(d1)) d1 = std::numeric_limits<double>::infinity();
-	//	ds.push_back(d1);
-	//}
-
 	cells cs = column[colname];
 	for(auto v: cs) {
 		double d = scale * boost::get<double>(v);

@@ -16,7 +16,7 @@
 
 #include <mcstats.h>
 
-#include "common.h"
+#include "common.hpp"
 
 using std::cout;
 using std::vector;

@@ -1,6 +1,4 @@
-#ifndef COMMON_H
-#define COMMON_H
-
+#pragma once
 
 #include <map>
 #include <string>
@@ -41,15 +39,4 @@ class coldata {
 		doubles get_doubles(string colname, double scale);
 		map<string, cells> column;
 		strings get_strings(string colname);
-		//vector<bool> isdouble(string colname);
-		//map<string, strings> stringvals;
-		//map<string, doubles> numbers;
-
-		
 };
-
-
-//typedef std::map<string, col_s> colmap;
-//colmap make_colmap();
-
-#endif
