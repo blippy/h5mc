@@ -22,11 +22,11 @@ int main()
 	coldata cd;
 	cd.read();
 
+	strings indices = cd.get_strings("FTSE_Index");
+	cells rs5s = cd.column["RS_5Year"];
 	strings sects = cd.get_strings("F.Sector");
 	set<string> sectors(sects.begin(), sects.end());
 	for(const auto&s: sectors) {
-		strings indices = cd.get_strings("FTSE_Index");
-		cells rs5s = cd.column["RS_5Year"];
 		doubles ds;
 		for(int i=0; i<indices.size(); ++i) {
 			if(s != sects[i]) continue;
