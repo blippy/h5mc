@@ -21,6 +21,7 @@ int main()
 {
 	coldata cd;
 	cd.read();
+	cd.write_rec();
 
 	strings indices = cd.get_strings("FTSE_Index");
 	cells rs5s = cd.column["RS_5Year"];

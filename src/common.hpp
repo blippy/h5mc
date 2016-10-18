@@ -35,7 +35,8 @@ class coldata {
 	public:
 		coldata() {};
 		void read();
-		int num_rows = 0;
+		void write_rec();
+		//int num_rows = 0;
 		doubles get_doubles(string colname, double scale);
 		map<string, cells> column;
 		strings get_strings(string colname);
