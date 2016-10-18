@@ -7,6 +7,7 @@
  */
 
 #include <cmath>
+#include <fstream>
 #include <iostream>
 #include <set>
 #include <string>
@@ -17,8 +18,37 @@
 
 using namespace std;
 
+
+const string root = "/home/mcarter/.fortran/STATSLIST";
+
+// TODO put to a reuasable
+void rectify()
+{
+	string fnout = root + "/StatsList-1.csv";
+	ofstream ofs(fnout.c_str(), std::ofstream::out);
+	string raw = slurp(root + "/StatsList.csv");
+	strings rows = split(raw, 13); // ^M
+	strings::iterator it = begin(rows);
+
+	string hdr_raw = *it;
+	string hdr;
+	for(int i=0; i< hdr_raw.size(); i++) { 
+		if(hdr_raw[i] == 'F' && hdr_raw[i+1] == '.') i+=2;
+		hdr += hdr_raw[i];
+	}
+	ofs << hdr << endl;
+
+	while(++it != end(rows)) {
+		string str = *it; // contains trailing ,
+		ofs << str.substr(0, str.size()-1) << endl;
+	}
+	ofs.close();
+}
+
 int main()
 {
+	rectify();
+
 	coldata cd;
 	cd.read();
 	cd.write_rec();
