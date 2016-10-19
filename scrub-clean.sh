@@ -18,4 +18,4 @@ clean_dir src
 rm -f src/tests/*log src/tests/*.trs
 rm -f test-driver
 
-rm -f src/h5rank
+(cd src ; rm -f h5new h5query h5rank qry01 shsl)

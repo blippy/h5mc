@@ -24,10 +24,20 @@ STD = -fcheck=all -ggdb
 
 LDADD = -lcxxstats
 bin_PROGRAMS = h5query h5rank qry01
-bin_PROGRAMS += h5new
+bin_PROGRAMS += h5new shsl
+#EXTRA_PROGRAMS = shsl
+
+#EXTRA_hdf_SOURCES = common5.cc
+#hdf_PROGRAMS = shsl
+hdf_LDADD = -lhdf5 -lcxxstats
+hdf_SOURCES = common.cc common5.cc
 
 h5new_LDADD = -lhdf5 -lcxxstats
 h5new_SOURCES = h5new.cc common.cc common5.cc 
+
+shsl_LDADD = $(hdf_LDADD)
+shsl_SOURCES = shsl.cc $(hdf_SOURCES)
+
 
 h5query_SOURCES = h5query.cc common.cc 
 

@@ -12,10 +12,11 @@
 #include <sstream>
 #include <sys/stat.h>
 
-#include "hdf5.h"
+#include <hdf5.h>
 
 
-#include "common.h"
+#include "common.hpp"
+#include "common5.hpp"
 
 using std::cout;
 using std::endl;
