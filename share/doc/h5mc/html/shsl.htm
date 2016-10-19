@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>h5mc</title>
+</head>
+
+<body>
+
+<h1>h5mc</h1>
+
+<hr><h2><code>shsl</code></h2>
+
+sharelock holmes stats list
+
+<p>Imports 
+<code>/home/mcarter/.fortran/STATSLIST/StatsList.csv</code>
+into file
+<code>/home/mcarter/.fortran/sharelock.h5</code>
+, giving it a datestamp corresponding to the creation date of the CSV file. 
+
+The file should NOT be preprocessed beforehand. It is able to work out if the columns are strings or numerica data (string data always begins with a double-quote). </p>
+
+
+<p>Prior to May 2016, processing was done using flex and bison. This has been eliminated, although source files are in the yacc directory at the top level. </p>
+
+<p>There seems to a bug: you need to run <code>shsl</code> twice for the dataset to be written
+</p>
+
+
+  </body>
+</html>
