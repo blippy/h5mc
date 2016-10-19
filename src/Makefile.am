@@ -24,11 +24,12 @@ STD = -fcheck=all -ggdb
 
 LDADD = -lcxxstats
 bin_PROGRAMS = h5query h5rank qry01
+bin_PROGRAMS += h5new
 
-#h5new_LDADD = -lhdf5
-#h5new_SOURCES = h5new.cc common.cc
+h5new_LDADD = -lhdf5 -lcxxstats
+h5new_SOURCES = h5new.cc common.cc common5.cc 
 
-h5query_SOURCES = h5query.cc common.cc
+h5query_SOURCES = h5query.cc common.cc 
 
 
 #h5rank_LDADD =  -lcxxstats

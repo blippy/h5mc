@@ -10,8 +10,11 @@
 
 #include "hdf5.h"
 
+//#include <mcstats.h>
 
-#include "common.h"
+
+#include "common.hpp"
+#include "common5.hpp"
 
 using std::cout;
 using std::endl;

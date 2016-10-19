@@ -1,7 +1,10 @@
+#include <iostream>
 #include <string.h>
 #include <algorithm>
 
-#include "common5.h"
+#include "common5.hpp"
+
+using namespace std;
 
 //char fname[] = "/home/mcarter/cubie/home/mcarter/data/sharelock.h5";
 //char fname[] = "/home/mcarter/sharelock.h5";
