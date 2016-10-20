@@ -24,9 +24,13 @@ STD = -fcheck=all -ggdb
 
 LDADD = -lcxxstats
 bin_PROGRAMS = h5query h5rank qry01
-ifdef $(HAVE_HDF5_TRUE)
+
+#ifeq ($(HAVE_HDF5_H),xx)
+#if $(HAVE_HDF5_H)
+#if HAVE_HDF5_H
+#ifeq ($(ac_cv_header_hdf5_h),yes)
+if MY_HDF5
 bin_PROGRAMS += h5new shsl
-endif
 
 #EXTRA_PROGRAMS = shsl
 
@@ -41,6 +45,7 @@ h5new_SOURCES = h5new.cc common.cc common5.cc
 shsl_LDADD = $(hdf_LDADD)
 shsl_SOURCES = shsl.cc $(hdf_SOURCES)
 
+endif
 
 h5query_SOURCES = h5query.cc common.cc 
 

@@ -35,11 +35,13 @@ AC_PROG_CXX
 #AC_PROG_CC
 #AC_PROG_YACC
 
-AX_LIB_HDF5()
-#AM_CONDITIONAL([HAVE_HDF5], [test x$with_hdf5 = xyes])
+#AX_LIB_HDF5()
+#AM_CONDITIONAL([MY_HAVE_HDF5], [test x$with_hdf5 = xyes])
 
 # Checks for libraries.
-#PKG_CHECK_MODULES([HDF5], [hdf5])
+#PKG_CHECK_MODULES([MY_HDF5], [hdf5])
+AC_CHECK_HEADERS([hdf5.h])
+AM_CONDITIONAL([MY_HDF5], [test x$ac_cv_header_hdf5_h == xyes])
 
 #PKG_CHECK_MODULES([DT], [datetime-fortran])
 #PKG_CHECK_MODULES([GSL], [gsl])
