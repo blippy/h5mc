@@ -24,7 +24,10 @@ STD = -fcheck=all -ggdb
 
 LDADD = -lcxxstats
 bin_PROGRAMS = h5query h5rank qry01
+ifdef $(HAVE_HDF5_TRUE)
 bin_PROGRAMS += h5new shsl
+endif
+
 #EXTRA_PROGRAMS = shsl
 
 #EXTRA_hdf_SOURCES = common5.cc

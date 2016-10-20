@@ -6,8 +6,9 @@ AC_INIT([h5mc], [0.2], [alt.mcarter@gmail.com])
 AC_CONFIG_SRCDIR([src/shsl.cc])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([foreign])
-PKG_PROG_PKG_CONFIG
+#PKG_PROG_PKG_CONFIG
 AC_MSG_NOTICE([Let's rock and roll])
+
 
 # Externally set CFLAGS
 #EXTERNAL_CFLAGS="$CFLAGS"
@@ -16,7 +17,6 @@ AC_MSG_NOTICE([Let's rock and roll])
 #	AC_SUBST([PLOT1], [-I/usr/local/lib/fortran/modules/plplot]))
 
 #AC_MSG_NOTICE([Fortran messy HDF5 checking])
-#AX_LIB_HDF5()
 
 # Checks for programs.
 #AC_CHECK_PROG(HAS_FORTRAN, [gfortran], 1)
@@ -35,6 +35,8 @@ AC_PROG_CXX
 #AC_PROG_CC
 #AC_PROG_YACC
 
+AX_LIB_HDF5()
+#AM_CONDITIONAL([HAVE_HDF5], [test x$with_hdf5 = xyes])
 
 # Checks for libraries.
 #PKG_CHECK_MODULES([HDF5], [hdf5])
