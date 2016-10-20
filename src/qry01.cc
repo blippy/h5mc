@@ -10,7 +10,9 @@
 #include <fstream>
 #include <iostream>
 #include <set>
+#include <sstream>
 #include <string>
+#include <utility>
 
 #include <mcstats.h>
 
@@ -45,6 +47,20 @@ void rectify()
 	ofs.close();
 }
 
+
+// reusable
+std::string dout(double d)
+{
+	std::ostringstream s;
+	s.precision(2);
+	s.width(7);
+	s << std::fixed;
+	s <<  d;
+	return s.str();
+}
+
+typedef pair<double, string> pear;
+
 int main()
 {
 	rectify();
@@ -57,6 +73,8 @@ int main()
 	cells rs5s = cd.column["RS_5Year"];
 	strings sects = cd.get_strings("F.Sector");
 	set<string> sectors(sects.begin(), sects.end());
+	//vector<string> outvec;
+	vector<pear> outvec;
 	for(const auto&s: sectors) {
 		doubles ds;
 		for(int i=0; i<indices.size(); ++i) {
@@ -68,10 +86,16 @@ int main()
 			ds.push_back(rs5);
 		}
 		sortd(ds);
-		cout << quantile(ds, 0.5) << " " << s << endl;
+		outvec.push_back(make_pair(quantile(ds, 0.5),  s));
 
-		//cout << s << endl;
+		//cout << quantile(ds, 0.5) << " " << s << endl;
 	}
+
+	//sort(begin(outvec), end(outvec), std::greater<string>());
+	sort(begin(outvec), end(outvec));
+	reverse(begin(outvec), end(outvec));
+	for(const auto& line:outvec)
+		cout << dout(line.first) << " " << line.second << endl;
 
 	return 0;
 }
