@@ -1,5 +1,0 @@
-This project set up using
-
-http://blog.fourthbit.com/2013/06/18/creating-an-open-source-program-in-c-with-autotools-part-1-of-2
-
-To generate configure: ./autogen.sh
